@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+//use Validator;
 use App\Http\Requests;
+use App\Product;
 
 class AdminController extends Controller
 {
@@ -15,7 +16,12 @@ class AdminController extends Controller
      */
     public function index()
     {
-        echo 'test';
+         $products = Product::orderBy('created_at', 'asc')
+              ->get();
+
+        return view('products.admin.index', [
+            'products' => $products,
+        ]);
     }
 
     /**
@@ -25,7 +31,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        //
+        return view('products.admin.create');
     }
 
     /**
@@ -36,7 +42,17 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this ->validate($request, [
+                'name' => 'required|max:255',
+                'description' =>'required',
+    ]);
+
+    $product = new Product;
+    $product->name = $request->name;
+    $product->description = $request->description;
+    $product->save();
+
+    return redirect()->route('admin');
     }
 
     /**
@@ -79,8 +95,9 @@ class AdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return redirect()->route('admin');
     }
 }
