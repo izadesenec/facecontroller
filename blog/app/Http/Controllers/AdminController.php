@@ -44,11 +44,13 @@ class AdminController extends Controller
     {
         $this ->validate($request, [
                 'name' => 'required|max:255',
+                'shorttext' =>'required',
                 'description' =>'required',
     ]);
 
     $product = new Product;
     $product->name = $request->name;
+    $product->shorttext = $request->shorttext;
     $product->description = $request->description;
     $product->save();
 
